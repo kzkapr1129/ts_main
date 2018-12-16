@@ -2,7 +2,7 @@
 
 #include <stdarg.h>
 
-static void log(const char* format, ...) {
+void log(const char* format, ...) {
   va_list arg;
 
   va_start(arg, format);
