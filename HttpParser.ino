@@ -10,6 +10,19 @@ HttpParser::HttpParser(TcpClient* client)
     : mClient(client), mMethod(HttpParser::UNKNOWN), mPath(NULL)  {
   err_t err = init();
   LOGIF((err != ERR_OK), "failed HttpParser init: err=%d", err);
+
+  // 使われなかったヘッダ情報を読み出し捨てる
+  while (true) {
+    uint8_t b;
+    err_t err = client->readByte(&b);
+    if (err != ERR_OK) {
+      break;
+    }
+
+    if (!b) {
+      break; // reached EOF
+    }
+  }
 }
 
 HttpParser::~HttpParser() {

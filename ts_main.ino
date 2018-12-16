@@ -19,19 +19,7 @@ static TcpServer srv;
 
 void setup() {
   wdt_disable();
-          
-  pinMode(4,OUTPUT);
-  digitalWrite(4, LOW);
 
-  pinMode(5,OUTPUT);
-  digitalWrite(5, LOW);
-
-  pinMode(12,OUTPUT);
-  digitalWrite(12, LOW);
-
-  pinMode(13,OUTPUT);
-  digitalWrite(13, LOW);
-  
   delay(1000);
   Serial.begin(115200);
   Serial.println();
@@ -54,18 +42,6 @@ void loop() {
       HttpParser::Method m = parser.method();
       const char* path = parser.path();
       LOG("Request: method=%d, path=%s", m, path);
- 
-      while (true) {
-        uint8_t b;
-        err_t err = client->readByte(&b);
-        if (err != ERR_OK) {
-          break;
-        }
-  
-        if (!b) {
-          break;
-        }
-      }
 
       client->write((uint8_t*)"HTTP/1.1 200 OK\r\n", 17);
       client->write((uint8_t*)"Content-Type: text/html\r\n\r\n", 27);
