@@ -7,6 +7,10 @@
 #include "lwip/tcp.h"
 #include "lwip/inet.h"
 #include "TcpServer.h"
+#include "HttpParser.h"
+
+#define DEBUG
+#include "Logger.h"
 
 #define SSID "esp"
 #define PASS "12345678"
@@ -17,6 +21,17 @@ void setup() {
   wdt_disable();
           
   pinMode(4,OUTPUT);
+  digitalWrite(4, LOW);
+
+  pinMode(5,OUTPUT);
+  digitalWrite(5, LOW);
+
+  pinMode(12,OUTPUT);
+  digitalWrite(12, LOW);
+
+  pinMode(13,OUTPUT);
+  digitalWrite(13, LOW);
+  
   delay(1000);
   Serial.begin(115200);
   Serial.println();
@@ -33,6 +48,13 @@ void loop() {
   TcpClient* client = srv.available();
   if (client) {
     if (client->isAvailable()) {
+
+      HttpParser parser(client);
+
+      HttpParser::Method m = parser.method();
+      const char* path = parser.path();
+      LOG("Request: method=%d, path=%s", m, path);
+ 
       while (true) {
         uint8_t b;
         err_t err = client->readByte(&b);
@@ -40,10 +62,7 @@ void loop() {
           break;
         }
   
-        if (b) {
-          char str[2] = {b, 0};
-          Serial.print(str);
-        } else {
+        if (!b) {
           break;
         }
       }

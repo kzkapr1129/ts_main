@@ -1,6 +1,6 @@
 #define LWIP_INTERNAL
 
-#define DEBUG
+#undef DEBUG
 #include "Logger.h"
 
 #include "lwip/opt.h"
